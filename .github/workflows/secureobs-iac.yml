@@ -1,0 +1,97 @@
+# >>> SECUREOBS MANAGED BLOCK v1 (do not edit between these markers — SecureObs maintains this block automatically)
+name: SecureObs IaC Analysis
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: secureobs-iac-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  secureobs-iac:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: "SecureObs static + Checkov — terraform/alicloud"
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -e SECUREOBS_API_KEY="${{ secrets.SECUREOBS_API_KEY }}" \
+            "secureobs/scanner:v1.4.2" scan \
+              --project-id "8045cf75-d0f4-4d95-ab15-35cf7c3e30f4" \
+              --tenant-id "eaca2727-6ddb-4f19-b602-53ae0c4ed0dd" \
+              --pipeline-run-id "${{ github.run_id }}-566917f7eb1344989c5991204ad9e2ac" \
+              --terraform-root-id "566917f7-eb13-4498-9c59-91204ad9e2ac" \
+              --source-revision "${{ github.sha }}" \
+              --iac-only \
+              --require-infrastructure-analysis \
+              --terraform-root "terraform/alicloud"
+
+      - name: "SecureObs static + Checkov — terraform/aws"
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -e SECUREOBS_API_KEY="${{ secrets.SECUREOBS_API_KEY }}" \
+            "secureobs/scanner:v1.4.2" scan \
+              --project-id "8045cf75-d0f4-4d95-ab15-35cf7c3e30f4" \
+              --tenant-id "eaca2727-6ddb-4f19-b602-53ae0c4ed0dd" \
+              --pipeline-run-id "${{ github.run_id }}-8f4d76b4973848af9fb5bfca43157869" \
+              --terraform-root-id "8f4d76b4-9738-48af-9fb5-bfca43157869" \
+              --source-revision "${{ github.sha }}" \
+              --iac-only \
+              --require-infrastructure-analysis \
+              --terraform-root "terraform/aws"
+
+      - name: "SecureObs static + Checkov — terraform/azure"
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -e SECUREOBS_API_KEY="${{ secrets.SECUREOBS_API_KEY }}" \
+            "secureobs/scanner:v1.4.2" scan \
+              --project-id "8045cf75-d0f4-4d95-ab15-35cf7c3e30f4" \
+              --tenant-id "eaca2727-6ddb-4f19-b602-53ae0c4ed0dd" \
+              --pipeline-run-id "${{ github.run_id }}-79e8495687774759b8cac5c30381a1ec" \
+              --terraform-root-id "79e84956-8777-4759-b8ca-c5c30381a1ec" \
+              --source-revision "${{ github.sha }}" \
+              --iac-only \
+              --require-infrastructure-analysis \
+              --terraform-root "terraform/azure"
+
+      - name: "SecureObs static + Checkov — terraform/gcp"
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -e SECUREOBS_API_KEY="${{ secrets.SECUREOBS_API_KEY }}" \
+            "secureobs/scanner:v1.4.2" scan \
+              --project-id "8045cf75-d0f4-4d95-ab15-35cf7c3e30f4" \
+              --tenant-id "eaca2727-6ddb-4f19-b602-53ae0c4ed0dd" \
+              --pipeline-run-id "${{ github.run_id }}-123c794625974183b3e84dd4164c79df" \
+              --terraform-root-id "123c7946-2597-4183-b3e8-4dd4164c79df" \
+              --source-revision "${{ github.sha }}" \
+              --iac-only \
+              --require-infrastructure-analysis \
+              --terraform-root "terraform/gcp"
+
+      - name: "SecureObs static + Checkov — terraform/oracle"
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -e SECUREOBS_API_KEY="${{ secrets.SECUREOBS_API_KEY }}" \
+            "secureobs/scanner:v1.4.2" scan \
+              --project-id "8045cf75-d0f4-4d95-ab15-35cf7c3e30f4" \
+              --tenant-id "eaca2727-6ddb-4f19-b602-53ae0c4ed0dd" \
+              --pipeline-run-id "${{ github.run_id }}-cd20e0915b864e7dabbb7942332a55d4" \
+              --terraform-root-id "cd20e091-5b86-4e7d-abbb-7942332a55d4" \
+              --source-revision "${{ github.sha }}" \
+              --iac-only \
+              --require-infrastructure-analysis \
+              --terraform-root "terraform/oracle"
+# <<< SECUREOBS MANAGED BLOCK END
