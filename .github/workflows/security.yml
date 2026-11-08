@@ -1,0 +1,25 @@
+name: SecureObs Security Scan
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: secureobs-scanner-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  secureobs:
+    uses: secureobs/secureobs-integrations/.github/workflows/secureobs.yml@v1
+    with:
+      project-id: "efb05c77-4025-4d5b-986a-95e0d7f68fa0"
+      tenant-id: "eaca2727-6ddb-4f19-b602-53ae0c4ed0dd"
+      image-tag: "latest"
+    secrets:
+      api-key: ${{ secrets.SECUREOBS_API_KEY }}
